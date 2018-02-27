@@ -33,7 +33,9 @@ class NewsList extends Component{
         axios.get(`http://localhost:3004/articles?_start=${this.state.start}&_end=${this.state.end}`)
         .then(res =>{
             this.setState({
-                items:[...this.state.items, ...res.data]
+                items:[...this.state.items, ...res.data],
+                start,
+                end
             });
         });
     }
