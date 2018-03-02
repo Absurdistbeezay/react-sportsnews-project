@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { CSSTransition , TransitionGroup } from 'react-transition-group';
 import { Link } from 'react-router-dom';
+import { firebaseTeams, firebaseArticles, firebaseLooper } from '../../../firebase'; 
+
 import axios from 'axios';
 import style from './newsList.css';
 import Button from '../Buttons/buttons';
 import CardInfo from '../CardInfo/cardInfo';
+
 
 class NewsList extends Component{
 
@@ -21,28 +24,45 @@ class NewsList extends Component{
     }
     request =(start, end) =>{
         if(this.state.teams.length <1){
-            axios.get(`http://localhost:3004/teams`)
-            .then(res=>{
+            firebaseTeams.once('value')
+            .then((snapshot)=>{
+                const teams = firebaseLooper(snapshot);
                 this.setState({
-                    teams:res.data
-                });
-            });
+                    teams
+                })
+            })
+            
+            // axios.get(`http://localhost:3004/teams`)
+            // .then(res=>{
+            //     this.setState({
+            //         teams:res.data
+            //     });
+            // });
 
         }
+        firebaseArticles.orderByChild('id').startAt(start).endAt(end).once('value')
+            .then((snapshot)=>{
+                const articles = firebaseLooper(snapshot);
+                this.setState({
+                    items:[...this.state.items, ...articles],
+                    start, end
+                })
+            })
+            .catch((e)=>console.log(e));
 
-        axios.get(`http://localhost:3004/articles?_start=${this.state.start}&_end=${this.state.end}`)
-        .then(res =>{
-            this.setState({
-                items:[...this.state.items, ...res.data],
-                start,
-                end
-            });
-        });
+        // axios.get(`http://localhost:3004/articles?_start=${this.state.start}&_end=${this.state.end}`)
+        // .then(res =>{
+        //     this.setState({
+        //         items:[...this.state.items, ...res.data],
+        //         start,
+        //         end
+        //     });
+        // });
     }
 
     loadMore=()=>{
         let end = this.state.end + this.state.amount;
-        this.request(this.state.end, end);
+        this.request(this.state.end+1, end);
     }
 
 
