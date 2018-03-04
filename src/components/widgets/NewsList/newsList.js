@@ -3,7 +3,7 @@ import { CSSTransition , TransitionGroup } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 import { firebaseTeams, firebaseArticles, firebaseLooper } from '../../../firebase'; 
 
-import axios from 'axios';
+
 import style from './newsList.css';
 import Button from '../Buttons/buttons';
 import CardInfo from '../CardInfo/cardInfo';
