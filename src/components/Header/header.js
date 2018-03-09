@@ -25,7 +25,7 @@ const Header = (props)=>{
     const logo =()=>{
         return(
             <Link to="/" className={style.logo}>
-            <img alt ="logo" src="/images/nba_logo.png"/>
+                <img alt ="logo" src="/images/nba_logo.png"/>
             </Link>
         )
     }

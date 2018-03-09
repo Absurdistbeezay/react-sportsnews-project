@@ -3,19 +3,16 @@ import {Link} from 'react-router-dom';
 import FontAwesome from 'react-fontawesome';
 import style from './sideNav.css';
 
-const SideNavItems = ()=>{
+const SideNavItems = (props)=>{
+
     const items = [
-        {
-            type: style.option,
-            icon: 'sign-out',
-            text: 'Sign Out',
-            link: '/sign-out'
-        },
+      
         {
             type: style.option,
             icon: 'home',
             text: 'Home',
-            link: '/'
+            link: '/',
+            login: ''
         },
         {
             type: style.option,
@@ -27,27 +24,70 @@ const SideNavItems = ()=>{
             type: style.option,
             icon: 'play',
             text: 'Videos',
-            link: '/videos'
+            link: '/videos',
+            login: ''
+        },
+        {
+            type: style.option,
+            icon: 'sign-in',
+            text: 'Dashboard',
+            link: '/dashboard',
+            login: false
         },
         {
             type: style.option,
             icon: 'sign-in',
             text: 'Sign In',
-            link: '/sign-in'
+            link: '/sign-in',
+            login: true
+        },
+        {
+            type: style.option,
+            icon: 'sign-out',
+            text: 'Sign Out',
+            link: '/sign-out',
+            login: false
         }
        
     ];
-    const showItems =()=>{
-        return items.map((item,i)=>{
-            return(
-                <div key={i} className={item.type}>
+
+    const element = (item, i)=>(
+         <div key={i} className={item.type}>
                 <Link to ={item.link}>
                     <FontAwesome name ={item.icon}/>
                     {item.text}
 
                 </Link>
-                </div>
-            )
+            </div>
+    )
+
+    const restricted = (item, i) =>{
+        let template = null;
+
+        if(props.user === null && item.login){
+            template = element(item, i)
+        }
+        if(props.user !== null && !item.login){
+            if(item.link === '/sign-out'){
+                template = (
+                     <div key={i}>
+                    <FontAwesome name ={item.icon}/>
+                    {item.text}
+            </div>
+                )
+            }else{
+                template = element(item, i)
+            }
+        }
+        return template;
+    }
+
+    const showItems =()=>{
+        return items.map((item,i)=>{
+            return item.login !== ''? 
+            restricted(item,i)
+            :
+            element(item, i)
         })
     }
     return(
